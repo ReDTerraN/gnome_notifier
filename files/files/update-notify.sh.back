@@ -1,0 +1,16 @@
+#!/bin/bash
+# Used by Update Notifier module inside puppet
+#notify_interval=$(hiera update_notifier::notify_interval)
+#message=$(hiera update_notifier::message)
+updates=$(/usr/local/bin/check-update)
+#last_notification_file="/var/tmp/update-notify.last-notification"
+
+if [[ $updates -gt 0 ]]; then
+    user=$(who | awk '{print $1}')
+#  if [[ ! -f "$last_notification_file" || $(($(date +%s) - $(cat $last_notification_file))) -gt $notify_interval ]]; then
+su -l $user -c "/usr/bin/notify-send -i /usr/share/icons/Adwaita/48x48/apps/help-contents-symbolic.symbolic.png '$updates updates available, message'"
+#    echo $(date +%s) > $last_notification_file
+        else
+        echo "Unable to determine active user."
+    fi
+#fi
